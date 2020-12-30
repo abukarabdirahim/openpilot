@@ -50,7 +50,7 @@ jobs:
     - name: Build openpilot and run quick check
       run: |
           ${{ env.RUN }} "cd /tmp/openpilot && \
-                          ls && \
+                          ls * && \
                           scons -j$(nproc) && \
                           $UNIT_TEST selfdrive/car"
 
@@ -135,12 +135,12 @@ jobs:
     - name: Build Docker image
       run: |
         eval "$BUILD"
-        docker pull $REGISTRY_BASE/$IMAGE_NAME:latest || true
-        docker build --cache-from $REGISTRY_BASE/$IMAGE_NAME:latest -t $IMAGE_NAME:latest -f Dockerfile.openpilot .
+        docker pull $REGISTRY_BASE:latest || true
+        docker build --cache-from $REGISTRY_BASE:latest -t $IMAGE_NAME:latest -f Dockerfile.openpilot .
     - name: Push to container registry
       run: |
         $DOCKER_LOGIN
-        docker push $REGISTRY_BASE/$IMAGE_NAME:latest
+        docker push $REGISTRY_BASE:latest
 
   static_analysis:
     name: static analysis
